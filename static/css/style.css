@@ -1,0 +1,16 @@
+/* CSS Styles */
+
+
+/* Fix issue with Bootstrap and nav bar */
+body {
+  padding-top: 51px;
+}
+@media (max-width: 979px) {
+  body {
+    padding-top: 0px;
+  }
+}
+
+.buff {
+	padding-bottom: 10px;
+}
