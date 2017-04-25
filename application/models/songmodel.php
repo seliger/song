@@ -12,10 +12,22 @@ class SongModel extends Model {
 
 	public function getAllSongs() {
 		return $this->query('SELECT * FROM song ORDER BY id');
+	}
+
+	public function getAllSongsCount() {
+		return $this->query('SELECT COUNT(*) AS songcount FROM song');
+	}
+
+	public function getSongsByRange($low, $high) {
+		$query = sprintf('SELECT * FROM song ORDER BY id LIMIT %s, %s',
+			$this->escapeString($low),
+			$this->escapeString($high));
+
+		return $this->query($query);
 	}	
 	
 	public function getSong($id) {
-		// When you have a query where you are substiuting in values that
+		// When you have a query where you are substituting in values that
 		// come from input, this is the documented best way to bind the
 		// values into the SQL query string.
 		// http://php.net/manual/en/function.mysql-query.php
