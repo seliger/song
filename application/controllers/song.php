@@ -2,6 +2,24 @@
 
 class Song extends Controller {
 	
+	function index() {
+		$this->page(1);
+	}
+
+	function page($page = 1)
+	{
+
+		$songmodel = $this->loadModel('SongModel');
+		
+		$songs = $songmodel->getSongsByRange(($page * 10) - 10, 10);
+		$songcount = $songmodel->getAllSongsCount();
+
+		$template = $this->loadView('song_list_view');
+		$template->set('songs', $songs);
+		$template->set('songcount', $songcount[0]);
+		$template->render();
+	}
+
 	function show($id) 
 	{
 
