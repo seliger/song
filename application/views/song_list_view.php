@@ -4,6 +4,11 @@
  		<h1>Song List</h1>
  	</div>
 
+
+    <div class="container">
+        <?= $pagination ?>
+    </div>
+
     <div class="container">
     	<div class="row">
     		<div class="col-md-1"><h3>ID</h3></div>
@@ -11,6 +16,8 @@
     		<div class="col-md-5"><h3>Track</h3></div>
             <div class="col-md-3"><h3>Action</h3></div>
     	</div>
+
+
 
 		<?
 		foreach ($songs as $song) {
@@ -41,12 +48,8 @@
 	</div>
 
     <div class="container">
-    <?
-        for ($p = 1; $p <= ( floor($songcount->songcount / 10) + ceil(($songcount->songcount % 10)/10)); $p++ ) {
-            ?>
-            <a href="<?= BASE_URL ?>song/page/<?= $p ?>"><?= $p ?></a> &nbsp;
-            <?
-        } 
-    ?>
+        <?= $pagination ?>
+    </div>
+
 
 <?php include('footer.php'); ?>

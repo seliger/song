@@ -9,14 +9,19 @@ class Song extends Controller {
 	function page($page = 1)
 	{
 
+		$items_per_page = 10;
+
 		$songmodel = $this->loadModel('SongModel');
 		
-		$songs = $songmodel->getSongsByRange(($page * 10) - 10, 10);
+		$songs = $songmodel->getSongsByRange(($page * $items_per_page) - $items_per_page, $items_per_page);
 		$songcount = $songmodel->getAllSongsCount();
+
+		$paginator = $this->loadHelper('paginator');
 
 		$template = $this->loadView('song_list_view');
 		$template->set('songs', $songs);
-		$template->set('songcount', $songcount[0]);
+		$template->set('pagination', $paginator->paginate('song/page/', $page, $songcount[0]->songcount, $items_per_page, 10));
+
 		$template->render();
 	}
 
