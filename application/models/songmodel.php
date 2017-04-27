@@ -25,6 +25,22 @@ class SongModel extends Model {
 
 		return $this->query($query);
 	}	
+
+	public function getSongsFilteredByArtist($artist, $low, $high) {
+		$query = sprintf('SELECT * FROM song WHERE artist LIKE "%s" ORDER BY id LIMIT %s, %s',
+			$this->escapeString($artist),
+			$this->escapeString($low),
+			$this->escapeString($high));
+
+		return $this->query($query);		
+	}
+
+	public function getSongsCountFilteredByArtist($artis) {
+		$query = sprintf('SELECT COUNT(*) AS songcount FROM song WHERE artist LIKE "%s"',
+			$this->escapeString($artist));
+
+		return $this->query($query);		
+	}
 	
 	public function getSong($id) {
 		// When you have a query where you are substituting in values that

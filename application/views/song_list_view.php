@@ -7,6 +7,9 @@
 
     <div class="container">
         <?= $pagination ?>
+        <form method="get">
+            Artist Filter: <input type="text" value="<?= $searchArtist ?>" name="searchArtist"> <input type="submit" value="Search">
+        </form>
     </div>
 
     <div class="container">

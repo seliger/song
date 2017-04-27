@@ -2,12 +2,16 @@
 
 	class Paginator {
 
-		function paginate($url, $current_page, $total_items, $items_per_page = 20, $max_pages_listed = 10) {
+		function paginate($url, $current_page, $total_items, $items_per_page = 20, $max_pages_listed = 10, $query_string = "") {
 
-	        $total_pages = floor($total_items / $items_per_page) 
-	            + ceil(($total_items % $items_per_page) / $items_per_page);
+	        $total_pages = (floor($total_items / $items_per_page) 
+	            + ceil(($total_items % $items_per_page) / $items_per_page));
 	        $paginator_count = floor($total_pages / $max_pages_listed) 
 	            + ceil(($total_pages % $max_pages_listed) / $max_pages_listed);
+
+
+	        if ($total_pages < 1) $total_pages = 1;
+	        if ($paginator_count < 1) $paginator_count = 1;
 
 	        // Correct the situation if/when $total_pages is less than $max_pages_listed
 	        if ($max_pages_listed > $total_pages) $max_pages_listed = $total_pages;
@@ -42,17 +46,17 @@
 	        // Build the links for the pages
 	        $pagelinks = "";
             for ($p = $low_page; $p <= $high_page; $p++ ) {
-                $pagelinks .= "<li class=\"".(($current_page == $p) ? "active" : ""). "\"><a href=\"".BASE_URL.$url.$p."\">".$p."</a></li>";
+                $pagelinks .= "<li class=\"".(($current_page == $p) ? "active" : ""). "\"><a href=\"".BASE_URL.$url.$p.$query_string ."\">".$p."</a></li>";
             } 
 
 	        // Emit the HTML blob for the pagination...
 	        $blob  = '<nav aria-label="Page navigation"><ul class="pagination">';
 	        $blob .= "<li class=\"". (($current_page == 1) ? "disabled" : "") ."\">";
-	        $blob .= "<a href=\"". (($current_page > 1) ? BASE_URL.$url.($current_page - 1 ) : "")  ."\" aria-label=\"Previous\">";
+	        $blob .= "<a href=\"". (($current_page > 1) ? BASE_URL.$url.($current_page - 1 ).$query_string : "")  ."\" aria-label=\"Previous\">";
 	        $blob .= "<span aria-hidden=\"true\">&laquo;</span></a></li>";
 	        $blob .= $pagelinks;
 	        $blob .= "<li class=\"". (($current_page == $total_pages) ? "disabled" : "") ."\">";
-	        $blob .= "<a href=\"". (($current_page <= $total_pages) ? BASE_URL.$url.($current_page + 1 ) : "") ."\" aria-label=\"Next\">";
+	        $blob .= "<a href=\"". (($current_page <= $total_pages) ? BASE_URL.$url.($current_page + 1 ).$query_string : "") ."\" aria-label=\"Next\">";
 	        $blob .= '<span aria-hidden="true">&raquo;</span></a></li></ul></nav>';
 
 	        return $blob;

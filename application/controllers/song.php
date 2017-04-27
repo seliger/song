@@ -3,7 +3,7 @@
 class Song extends Controller {
 	
 	function index() {
-		$this->page(1);
+		$this->redirect('song/page/1');
 	}
 
 	function page($page = 1)
@@ -12,15 +12,30 @@ class Song extends Controller {
 		$items_per_page = 10;
 
 		$songmodel = $this->loadModel('SongModel');
-		
-		$songs = $songmodel->getSongsByRange(($page * $items_per_page) - $items_per_page, $items_per_page);
-		$songcount = $songmodel->getAllSongsCount();
-
 		$paginator = $this->loadHelper('paginator');
-
 		$template = $this->loadView('song_list_view');
+		
+		if ($_SERVER['REQUEST_METHOD'] == "GET" && $_GET["searchArtist"] ) {
+			// If someone has entered something into the search box, we need to react
+			// accordingly and apply a filter.
+			$queryString = '?'.$_SERVER["QUERY_STRING"];
+
+			$searchArtist = '%'.$_GET["searchArtist"].'%';
+			$songs = $songmodel->getSongsFilteredByArtist($searchArtist, ($page * $items_per_page) - $items_per_page, $items_per_page);
+			$songcount_result = $songmodel->getSongsCountFilteredByArtist($searchArtist);
+
+			$template->set('searchArtist', $_GET["searchArtist"]);
+		} else {
+			$queryString = "";
+			// If no filter was requested, provide the normal list of all items
+			$songs = $songmodel->getSongsByRange(($page * $items_per_page) - $items_per_page, $items_per_page);
+			$songcount_result = $songmodel->getAllSongsCount();
+		}
+
+		$songcount = $songcount_result[0]->songcount;
+
 		$template->set('songs', $songs);
-		$template->set('pagination', $paginator->paginate('song/page/', $page, $songcount[0]->songcount, $items_per_page, 10));
+		$template->set('pagination', $paginator->paginate('song/page/', $page, $songcount, $items_per_page, 10, $queryString));
 
 		$template->render();
 	}
